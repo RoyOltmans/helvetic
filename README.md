@@ -19,6 +19,19 @@ It requires local DNS spoofing in order to intercept requests originally bound f
 * Profile manager (through Django Admin)
 * Sending more than 1 user profile to Aria
 
+## Docker deployment for Django helv_test
+
+In the root of the project:
+```sh
+docker-compose up -d --build
+```
+It includes a nginx for rerouting, never got that to work. For now working on LXC on proxmox
+
+You can execute this in proxmox
+```sh
+helvetic_lxc.sh
+```
+
 ## Planned
 
 * WiFi connection setup & complete registration flow
