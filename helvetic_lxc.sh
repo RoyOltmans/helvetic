@@ -65,7 +65,7 @@ pct exec $LXC_ID -- bash -c "
 set -e
 apt-get update
 apt-get install -y python3 python3-pip git nginx
-pip3 install --break-system-packages bottle crcmod
+pip3 install --break-system-packages bottle crcmod python-dotenv
 git clone https://github.com/RoyOltmans/helvetic.git /opt/helvetic
 
 cat >/etc/systemd/system/helvetic.service <<EOF
