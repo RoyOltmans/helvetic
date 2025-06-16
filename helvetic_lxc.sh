@@ -53,29 +53,29 @@ fi
 # ---- 4. Start and wait for network ----
 pct start $LXC_ID
 echo "Waiting for network in LXC $LXC_ID..."
-pct exec $LXC_ID -- bash -c "until ping -c1 $LXC_GATEWAY >/dev/null 2>&1; do sleep 1; done"
+pct exec $LXC_ID -- bash -c "until ping -c1 1.1.1.1 >/dev/null 2>&1; do sleep 1; done"
 echo "Network up in LXC $LXC_ID."
 
 # ---- 5. (Optional) Set root password interactively after creation ----
 echo "You can set the root password manually by running:"
 echo "  pct passwd $LXC_ID"
 
-# ---- 6. Provision example app and nginx ----
+# ---- 6. Provision helvetic and nginx ----
 pct exec $LXC_ID -- bash -c "
 set -e
 apt-get update
 apt-get install -y python3 python3-pip git nginx
 pip3 install --break-system-packages bottle crcmod
-git clone https://github.com/exampleuser/exampleapp.git /opt/exampleapp
+git clone https://github.com/RoyOltmans/helvetic.git /opt/helvetic
 
-cat >/etc/systemd/system/example.service <<EOF
+cat >/etc/systemd/system/helvetic.service <<EOF
 [Unit]
-Description=Example App Testserver
+Description=Helvetic Testserver
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /opt/exampleapp/mvp/server.py 0.0.0.0 8000
-WorkingDirectory=/opt/exampleapp
+ExecStart=/usr/bin/python3 /opt/helvetic/mvp/server.py 0.0.0.0 8000
+WorkingDirectory=/opt/helvetic
 Restart=always
 User=root
 
@@ -83,27 +83,27 @@ User=root
 WantedBy=multi-user.target
 EOF
 
-systemctl enable example
-systemctl start example
+systemctl enable helvetic
+systemctl start helvetic
 
-cat >/etc/nginx/sites-available/example <<EONGX
+cat >/etc/nginx/sites-available/helvetic <<EONGX
 server {
     listen 80 default_server;
     server_name _;
     location / {
         proxy_pass http://127.0.0.1:8000;
-        mirror /mirror_upstream;
+        mirror /mirror_fitbit;
         mirror_request_body on;
     }
-    location = /mirror_upstream {
+    location = /mirror_fitbit {
         internal;
-        proxy_pass http://api.example.com\$request_uri;
-        proxy_set_header Host api.example.com;
+        proxy_pass http://api.fitbit.com\$request_uri;
+        proxy_set_header Host api.fitbit.com;
     }
 }
 EONGX
 
-ln -sf /etc/nginx/sites-available/example /etc/nginx/sites-enabled/example
+ln -sf /etc/nginx/sites-available/helvetic /etc/nginx/sites-enabled/helvetic
 rm -f /etc/nginx/sites-enabled/default
 systemctl restart nginx
 "
@@ -111,8 +111,8 @@ systemctl restart nginx
 echo "======================================================"
 echo "LXC $LXC_ID ($LXC_NAME) created and configured."
 echo "IP address: $LXC_IP"
-echo "Nginx is listening on port 80 (mirrors to example.com)."
-echo "Example testserver running on port 8000."
+echo "Nginx is listening on port 80 (mirrors to Fitbit)."
+echo "Helvetic testserver running on port 8000."
 echo "Set password: pct passwd $LXC_ID"
 echo "Enter: pct enter $LXC_ID"
 echo "======================================================"
