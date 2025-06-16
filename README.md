@@ -60,11 +60,11 @@ This script automates the creation and provisioning of a Debian-based LXC contai
 1. **Copy the script to your Proxmox host** (e.g. as `create_example_lxc.sh`).
 2. **Make the script executable:**
    ```bash
-   chmod +x create_example_lxc.sh
+   chmod +x helvetic_lxc.sh
 
 You can execute this in proxmox
 ```sh
-helvetic_lxc.sh
+bash helvetic_lxc.sh
 ```
 
 ## Planned
