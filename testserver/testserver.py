@@ -89,7 +89,7 @@ def upload():
 		
 		1, # userid = 1
 		#'ABC' + (' '*17), # Initials of user
-		name,
+		name.encode("ascii"),
 		
 		min_tolerance, # min tolerance (weight, g)
 		max_tolerance, # max tolerance (weight, g)
